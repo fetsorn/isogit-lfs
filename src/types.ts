@@ -1,11 +1,9 @@
-import type { HttpClient } from 'isomorphic-git/http/node';
-
+import type { HttpClient } from "isomorphic-git";
 
 export interface BasicAuth {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
-
 
 // TODO: Restructure HTTPRequest to reuse Isomorphic Git’s GitHttpRequest?
 
@@ -17,5 +15,5 @@ export interface HTTPRequest {
   url: string;
 
   /** Auth data for basic HTTP auth. */
-  auth?: BasicAuth
+  auth?: BasicAuth;
 }

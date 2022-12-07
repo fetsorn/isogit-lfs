@@ -1,7 +1,10 @@
 import { Buffer } from "buffer";
 
-import git, { PromiseFsClient } from "isomorphic-git";
-import http, { GitProgressEvent } from "isomorphic-git/http/node";
+import git, {
+  GitProgressEvent,
+  HttpClient,
+  PromiseFsClient,
+} from "isomorphic-git";
 
 import { isVacantAndWriteable, pointsToLFS } from "./util";
 import downloadBlobFromPointer from "./download";
@@ -26,6 +29,7 @@ type ProgressHandler = (progress: GitProgressEvent) => void;
  */
 export default async function populateCache(
   fs: PromiseFsClient,
+  http: HttpClient,
   workDir: string,
   remoteURL: string,
   ref: string = "HEAD",
