@@ -1,5 +1,5 @@
 {
-  "name": "@riboseinc/isogit-lfs",
+  "name": "@nulo/isogit-lfs",
   "version": "0.1.6",
   "description": "LFS helpers for Isomorphic Git (Node only)",
   "main": "index.js",
