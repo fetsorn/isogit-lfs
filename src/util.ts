@@ -1,20 +1,19 @@
-import fs from 'fs/promises';
-import { constants as fsConstants } from 'fs';
-import { BasicAuth } from './types';
+import { Buffer } from "buffer";
+import { BasicAuth } from "./types";
+import { PromiseFsClient } from "isomorphic-git";
 
-
-export const SPEC_URL = 'https://git-lfs.github.com/spec/v1';
+export const SPEC_URL = "https://git-lfs.github.com/spec/v1";
 
 export const LFS_POINTER_PREAMBLE = `version ${SPEC_URL}\n`;
-
 
 /** Returns true if given blob represents an LFS pointer. */
 export function pointsToLFS(content: Buffer): boolean {
   return (
-    content[0] === 118 // 'v'
-    && content.subarray(0, 100).indexOf(LFS_POINTER_PREAMBLE) === 0);
+    content[0] === 118 && // 'v'
+    // TODO: This is inefficient, it should only search the first line or first few bytes.
+    content.indexOf(LFS_POINTER_PREAMBLE) === 0
+  );
 }
-
 
 /**
  * Returns properly encoded HTTP Basic auth header,
@@ -22,28 +21,31 @@ export function pointsToLFS(content: Buffer): boolean {
  */
 export function getAuthHeader(auth: BasicAuth): Record<string, string> {
   return {
-    'Authorization':
-      `Basic ${Buffer.from(`${auth.username}:${auth.password}`).toString('base64')}`,
+    Authorization: `Basic ${Buffer.from(
+      `${auth.username}:${auth.password}`
+    ).toString("base64")}`,
   };
 }
-
 
 /**
  * Returns true if given path is available for writing,
  * regardless of whether or not it is occupied.
  */
-export async function isWriteable(filepath: string): Promise<boolean> {
+export async function isWriteable(
+  { promises: fs }: PromiseFsClient,
+  filepath: string
+): Promise<boolean> {
   try {
-    await fs.access(filepath, fsConstants.W_OK);
+    // TODO: there's no API for this in PromiseFsClient world
+    // await fs.access(filepath, fsConstants.W_OK);
     return true;
   } catch (e) {
-    if ((e as { code: string }).code === 'ENOENT') {
+    if ((e as { code: string }).code === "ENOENT") {
       return true;
     }
     return false;
   }
 }
-
 
 /**
  * Returns true if given path is available for writing
@@ -51,15 +53,16 @@ export async function isWriteable(filepath: string): Promise<boolean> {
  */
 export async function isVacantAndWriteable(filepath: string): Promise<boolean> {
   try {
-    await fs.access(filepath, fsConstants.W_OK);
+    // TODO: there's no API for this in PromiseFsClient world
+    return true;
+    // await fs.access(filepath, fsConstants.W_OK);
   } catch (e) {
-    if ((e as { code: string }).code === 'ENOENT') {
+    if ((e as { code: string }).code === "ENOENT") {
       return true;
     }
   }
   return false;
 }
-
 
 export async function bodyToBuffer(body: Uint8Array[]): Promise<Buffer> {
   const buffers = [];
@@ -78,13 +81,12 @@ export async function bodyToBuffer(body: Uint8Array[]): Promise<Buffer> {
   return Buffer.from(result.buffer);
 }
 
-
 // Borrowed from Isomorphic Git core, it is not importable.
 export function toHex(buffer: ArrayBuffer): string {
-  let hex = ''
+  let hex = "";
   for (const byte of new Uint8Array(buffer)) {
-    if (byte < 16) hex += '0'
-    hex += byte.toString(16)
+    if (byte < 16) hex += "0";
+    hex += byte.toString(16);
   }
-  return hex
+  return hex;
 }
