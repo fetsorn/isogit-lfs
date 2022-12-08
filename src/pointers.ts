@@ -74,6 +74,7 @@ export function formatPointerInfo(info: PointerInfo): Buffer {
     `version ${SPEC_URL}`,
     `oid sha256:${info.oid}`,
     `size ${info.size}`,
+    "",
   ];
   return Buffer.from(lines.join("\n"));
 }
