@@ -116,7 +116,7 @@ export default async function uploadBlob(
               // - Figure out which LFS implementation wants which UA header?
               ...(verifyAction.header ?? {}),
             },
-            body: [info],
+            body: [Buffer.from(JSON.stringify(info))],
           });
 
           if (verificationResp.statusCode === 200) {
