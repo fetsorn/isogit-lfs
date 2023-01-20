@@ -92,9 +92,10 @@ export default async function uploadBlobs(
           },
           body: JSON.stringify(infos[index]),
         });
-        throw new Error(
-          `Upload might have been unsuccessful, verification action yielded HTTP ${verificationResp.status}`
-        );
+        if (!resp.ok)
+          throw new Error(
+            `Upload might have been unsuccessful, verification action yielded HTTP ${verificationResp.status}`
+          );
       }
     })
   );
