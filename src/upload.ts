@@ -27,7 +27,8 @@ function isValidLFSInfoResponseData(
 }
 
 /**
- * Given a blob, uploads the blob to LFS server and returns a PointerInfo,
+ * Given an array of blobs, uploads the blobs to LFS server
+ * and returns an array of PointerInfo,
  * which the caller can then combine with object path into a Pointer
  * and commit in place of the original Git blob.
  */

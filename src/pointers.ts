@@ -1,5 +1,4 @@
 import path from "path-browserify";
-import { Sha256 } from "@aws-crypto/sha256-universal";
 import { Buffer } from "buffer";
 import { SPEC_URL, toHex } from "./util";
 

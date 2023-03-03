@@ -1,18 +1,16 @@
-Aspirationally, a set of helpers
-to simplify working with Git LFS through Isomorphic Git.
+A set of helpers to simplify working with Git LFS through Isomorphic Git.
 
 
 == Installation
 
 Peer dependencies:
 
-- Isomorphic Git ^1.7.0
-- @aws-crypto/sha256-universal ^2.0.0
+- Isomorphic Git ^1.21.0
 
 
 == Usage
 
-As of 0.1.6, API offers the following functions:
+As of 0.2.8, API offers the following functions:
 
 
 - `downloadBlobFromPointer({ http, headers, url, auth }, lfsPointer) => Buffer`
@@ -24,7 +22,7 @@ and `lfsPointer` is an object returned by `readPointer()`.
 Uses cache, if the object had been previously retrieved.
 
 
-- `uploadBlob({ http, headers, url, auth }, buffer) => LFSPointerInfo`
+- `uploadBlobs({ http, headers, url, auth }, buffers) => LFSPointerInfo`
 +
 where first argument is the same as for the download function,
 and returned pointer info can be used to write a pointer file in place
@@ -53,18 +51,9 @@ suitable to be stored in Git repository in place of actual object data.
 where `workDir` is a path to working directory,
 and `ref` should probably be left at the default `"HEAD"`.
 +
-NOTE: Very tentative API.
 
-
-== Known shortcomings
-
-- Works in Node runtime only
-- @aws-crypto/sha256-universal peer dependency is unnecessary.
-If we’re Node-only we can probably achieve the same using Node’s `crypto` module,
-and if not we should place it in actual `dependencies`.
 
 == Considered within scope
 
 - Implement batch uploads and downloads (parallelise requests? use native batch API?)
 - Find a way to generalize UA header handling
-- Make it work in browser runtime as well (if feasible?)
