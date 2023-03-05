@@ -1,18 +1,12 @@
 import { Buffer } from "buffer";
 
-import git, {
-  GitProgressEvent,
-  HttpClient,
-  PromiseFsClient,
-} from "isomorphic-git";
-
-import { isVacantAndWriteable, pointsToLFS } from "./util";
-import downloadBlobFromPointer from "./download";
-import { readPointer } from "./pointers";
+import { isVacantAndWriteable, pointsToLFS } from "./util.js";
+import downloadBlobFromPointer from "./download.js";
+import { readPointer } from "./pointers.js";
 
 const SYMLINK_MODE = 40960;
 
-type ProgressHandler = (progress: GitProgressEvent) => void;
+// type ProgressHandler = (progress: GitProgressEvent) => void;
 
 /**
  * Populates LFS cache for each repository object that is an LFS pointer.
@@ -27,13 +21,19 @@ type ProgressHandler = (progress: GitProgressEvent) => void;
  *
  * NOTE: onProgress currently doesn’t report loaded/total values accurately.
  */
+// @param {PromiseFsClient} fs
+// @param {HttpClinet} http
+// @param {string} workDir
+// @param {string} remoteURL
+// @param {string} ref
+// @param {ProgressHandler} onProgress
 export default async function populateCache(
-  fs: PromiseFsClient,
-  http: HttpClient,
-  workDir: string,
-  remoteURL: string,
-  ref: string = "HEAD",
-  onProgress?: ProgressHandler
+  fs,
+  http,
+  workDir,
+  remoteURL,
+  ref = "HEAD",
+  onProgress
 ) {
   await git.walk({
     fs,

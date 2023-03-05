@@ -34,6 +34,9 @@ of actual object in Git repository (pass it through `formatPointerInfo()`).
 where `dir`, `gitdir` behavior mimics that of Isomorphic Git,
 and `content` is a `Buffer`.
 
+- `buildPointerInfo(content) => LFSPointerInfo`
++
+converts file to a pointer.
 
 - `readPointerInfo(buffer) => LFSPointerInfo`
 +
@@ -51,6 +54,10 @@ suitable to be stored in Git repository in place of actual object data.
 where `workDir` is a path to working directory,
 and `ref` should probably be left at the default `"HEAD"`.
 +
+
+- `pointsToLFS(content) => boolean`
++
+tells if file is an LFS pointer.
 
 
 == Considered within scope

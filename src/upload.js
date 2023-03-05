@@ -1,27 +1,29 @@
 import { Buffer } from "buffer";
 
-import { HTTPRequest } from "./types";
-import { buildPointerInfo, PointerInfo } from "./pointers";
-import { getAuthHeader } from "./util";
+// import { HTTPRequest } from "./types";
+import { buildPointerInfo, PointerInfo } from "./pointers.js";
+import { getAuthHeader } from "./util.js";
 
-interface LFSInfoResponse {
-  objects: {
-    actions?: {
-      upload: {
-        href: string;
-        header?: Record<string, string>;
-      };
-      verify?: {
-        href: string;
-        header?: Record<string, string>;
-      };
-    };
-  }[];
-}
 
-function isValidLFSInfoResponseData(
-  val: Record<string, any>
-): val is LFSInfoResponse {
+// interface LFSInfoResponse {
+//   objects: {
+//     actions?: {
+//       upload: {
+//         href: string;
+//         header?: Record<string, string>;
+//       };
+//       verify?: {
+//         href: string;
+//         header?: Record<string, string>;
+//       };
+//     };
+//   }[];
+// }
+
+// isLFSInfoResponse
+// @param {object} val
+// @returns bool
+function isValidLFSInfoResponseData(val) {
   const obj = val.objects?.[0];
   return obj && (!obj.actions || obj.actions.upload.href.trim !== undefined);
 }
@@ -32,13 +34,16 @@ function isValidLFSInfoResponseData(
  * which the caller can then combine with object path into a Pointer
  * and commit in place of the original Git blob.
  */
+// @param {HTTPRequest}
+// @param {Buffer[]} contents
+// @returns {PointerInfo[]}
 export default async function uploadBlobs(
-  { headers = {}, url, auth }: HTTPRequest,
-  contents: Buffer[]
-): Promise<PointerInfo[]> {
+  { headers = {}, url, auth },
+  contents
+) {
   const infos = await Promise.all(contents.map((c) => buildPointerInfo(c)));
 
-  const authHeaders: Record<string, string> = auth ? getAuthHeader(auth) : {};
+  const authHeaders = auth ? getAuthHeader(auth) : {};
 
   // Request LFS transfer
   const lfsInfoRequestData = {

@@ -1,37 +1,63 @@
-import path from "path-browserify";
+import path from "path";
 import { Buffer } from "buffer";
 
-import { bodyToBuffer, getAuthHeader, isWriteable } from "./util";
-import { Pointer } from "./pointers";
-import { HTTPRequest } from "./types";
-import { PromiseFsClient } from "isomorphic-git";
+import { bodyToBuffer, getAuthHeader, isWriteable } from "./util.js";
+import { Pointer } from "./pointers.js";
+// import { HTTPRequest } from "./types";
 
-interface LFSInfoResponse {
-  objects: {
-    actions: {
-      download: {
-        href: string;
-        header?: Record<string, string>;
-      };
-    };
-  }[];
+// interface LFSInfoResponse {
+//   objects: {
+//     actions: {
+//       download: {
+//         href: string;
+//         header?: Record<string, string>;
+//       };
+//     };
+//   }[];
+// }
+
+// @param {object} val
+// @returns bool
+function isValidLFSInfoResponseData(val) {
+  return val.objects?.[0]?.actions?.download?.href?.trim !== undefined;
 }
 
-function isValidLFSInfoResponseData(
-  val: Record<string, any>
-): val is LFSInfoResponse {
-  return val.objects?.[0]?.actions?.download?.href?.trim !== undefined;
+async function mkdir(fs, objectPath) {
+  const pathElements = objectPath.replace(/^\//, '').split('/');
+
+  pathElements.pop();
+
+  let root = '';
+
+  for (let i = 0; i < pathElements.length; i += 1) {
+    const pathElement = pathElements[i];
+
+    root += '/';
+
+    const files = await fs.readdir(root);
+
+    if (!files.includes(pathElement)) {
+      await fs.mkdir(`${root}/${pathElement}`);
+    }
+
+    root += pathElement;
+  }
 }
 
 /**
  * Downloads, caches and returns a blob corresponding to given LFS pointer.
  * Uses already cached object, if size matches.
  */
+// @param {object} val
+// @returns {Buffer}
+// { promises: fs }: PromiseFsClient,
+// { http: { request }, headers = {}, url, auth }: HTTPRequest,
+// { info, objectPath }: Pointer
 export default async function downloadBlobFromPointer(
-  { promises: fs }: PromiseFsClient,
-  { http: { request }, headers = {}, url, auth }: HTTPRequest,
-  { info, objectPath }: Pointer
-): Promise<Buffer> {
+  { promises: fs },
+  { http: { request }, headers = {}, url, auth },
+  { info, objectPath }
+) {
   try {
     const cached = await fs.readFile(objectPath);
     if (cached.byteLength === info.size) {
@@ -39,12 +65,12 @@ export default async function downloadBlobFromPointer(
     }
   } catch (e) {
     // Silence file not found errors (implies cache miss)
-    if ((e as any).code !== "ENOENT") {
+    if (e.code !== "ENOENT") {
       throw e;
     }
   }
 
-  const authHeaders: Record<string, string> = auth ? getAuthHeader(auth) : {};
+  const authHeaders = auth ? getAuthHeader(auth) : {};
 
   // Request LFS transfer
 
@@ -69,7 +95,7 @@ export default async function downloadBlobFromPointer(
   });
 
   const lfsInfoResponseRaw = (await bodyToBuffer(lfsInfoBody)).toString();
-  let lfsInfoResponseData: any;
+  let lfsInfoResponseData;
   try {
     lfsInfoResponseData = JSON.parse(lfsInfoResponseRaw);
   } catch (e) {
@@ -101,7 +127,11 @@ export default async function downloadBlobFromPointer(
 
     // Write LFS cache for this object, if cache path is accessible.
     if (await isWriteable({ promises: fs }, objectPath)) {
-      await fs.mkdir(path.dirname(objectPath), { recursive: true });
+
+      // custom recursive mkdir function
+      // because LightiningFS fails on fs.mkdir({recursive: true})
+      await mkdir(fs, objectPath)
+
       await fs.writeFile(objectPath, blob);
     }
 

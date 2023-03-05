@@ -1,9 +1,12 @@
 {
   "name": "@fetsorn/isogit-lfs",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "description": "LFS helpers for Isomorphic Git",
-  "main": "src/index.ts",
-  "scripts": {},
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src/"
+  ],
   "contributors": [
     {
       "name": "Ribose Inc.",
@@ -18,17 +21,5 @@
       "email": "fetsorn@gmail.com"
     }
   ],
-  "dependencies": {
-    "buffer": "^6.0.3",
-    "path-browserify": "^1.0.1"
-  },
-  "peerDependencies": {
-    "isomorphic-git": "^1.21.0"
-  },
-  "devDependencies": {
-    "@types/path-browserify": "^1.0.0",
-    "isomorphic-git": "^1.21.0",
-    "typescript": "^4.9.5"
-  },
   "license": "MIT"
 }
