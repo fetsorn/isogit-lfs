@@ -1,6 +1,6 @@
 {
   "name": "@fetsorn/isogit-lfs",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "LFS helpers for Isomorphic Git",
   "main": "src/index.js",
   "type": "module",
