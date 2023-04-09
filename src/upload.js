@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 
-import { buildPointerInfo, PointerInfo } from "./pointers.js";
+import { buildPointerInfo } from "./pointers.js";
 import { getAuthHeader } from "./util.js";
 
 
