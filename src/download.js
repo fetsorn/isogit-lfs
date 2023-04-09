@@ -2,8 +2,6 @@ import path from "path";
 import { Buffer } from "buffer";
 
 import { bodyToBuffer, getAuthHeader, isWriteable } from "./util.js";
-import { Pointer } from "./pointers.js";
-// import { HTTPRequest } from "./types";
 
 // interface LFSInfoResponse {
 //   objects: {

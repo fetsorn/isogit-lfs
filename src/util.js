@@ -1,5 +1,4 @@
 import { Buffer } from "buffer";
-// import { BasicAuth } from "./types";
 
 export const SPEC_URL = "https://git-lfs.github.com/spec/v1";
 

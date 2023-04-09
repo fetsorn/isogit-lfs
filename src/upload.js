@@ -1,6 +1,5 @@
 import { Buffer } from "buffer";
 
-// import { HTTPRequest } from "./types";
 import { buildPointerInfo, PointerInfo } from "./pointers.js";
 import { getAuthHeader } from "./util.js";
 
