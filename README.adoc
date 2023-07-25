@@ -10,8 +10,7 @@ Peer dependencies:
 
 == Usage
 
-As of 0.2.8, API offers the following functions:
-
+As of 0.4.0, API offers the following functions:
 
 - `downloadBlobFromPointer({ http, headers, url, auth }, lfsPointer) => Buffer`
 +
@@ -59,6 +58,11 @@ and `ref` should probably be left at the default `"HEAD"`.
 +
 tells if file is an LFS pointer.
 
+- `downloadUrlFromPointer({ http, headers, url, auth, info }) => Buffer`
++
+where `http` is an `HttpClient` as supported by Isomorphic Git,
+URL is repository URL
+and `info` is an object returned by `buildPointerInfo()`.
 
 == Considered within scope
 

@@ -43,6 +43,57 @@ async function mkdir(fs, objectPath) {
 }
 
 /**
+ * Returns a download url corresponding to given LFS pointer.
+ */
+export async function downloadUrlFromPointer(
+  { http: { request }, headers = {}, url, auth, info },
+) {
+  const authHeaders = auth ? getAuthHeader(auth) : {};
+
+  // Request LFS transfer
+
+  const lfsInfoRequestData = {
+    operation: "download",
+    transfers: ["basic"],
+    objects: [info],
+  };
+
+  const { body: lfsInfoBody } = await request({
+    url: `${url}/info/lfs/objects/batch`,
+    method: "POST",
+    headers: {
+      // Github LFS doesn’t seem to accept this UA, but works fine without any
+      // 'User-Agent': `git/isomorphic-git@${git.version()}`,
+      ...headers,
+      ...authHeaders,
+      Accept: "application/vnd.git-lfs+json",
+      "Content-Type": "application/vnd.git-lfs+json",
+    },
+    body: [Buffer.from(JSON.stringify(lfsInfoRequestData))],
+  });
+
+  const lfsInfoResponseRaw = (await bodyToBuffer(lfsInfoBody)).toString();
+  let lfsInfoResponseData;
+  try {
+    lfsInfoResponseData = JSON.parse(lfsInfoResponseRaw);
+  } catch (e) {
+    throw new Error(
+      `Unexpected structure received from LFS server: unable to parse JSON ${lfsInfoResponseRaw}`
+    );
+  }
+
+  if (isValidLFSInfoResponseData(lfsInfoResponseData)) {
+    // Request the actual blob
+
+    const downloadAction = lfsInfoResponseData.objects[0].actions.download;
+    const lfsObjectDownloadURL = downloadAction.href;
+    const lfsObjectDownloadHeaders = downloadAction.header ?? {};
+
+    return lfsObjectDownloadURL
+  }
+}
+
+/**
  * Downloads, caches and returns a blob corresponding to given LFS pointer.
  * Uses already cached object, if size matches.
  */
