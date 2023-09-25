@@ -9,7 +9,7 @@ export const LFS_POINTER_PREAMBLE = `version ${SPEC_URL}\n`;
 // @returns {boolean}
 export function pointsToLFS(content) {
   return (
-    content[0] === 118 && // 'v'
+    content[0] === 118 || // 'v'
     // TODO: This is inefficient, it should only search the first line or first few bytes.
     content.indexOf(LFS_POINTER_PREAMBLE) === 0
   );
