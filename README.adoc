@@ -10,7 +10,7 @@ Peer dependencies:
 
 == Usage
 
-As of 0.4.0, API offers the following functions:
+As of 0.5.0, API offers the following functions:
 
 - `downloadBlobFromPointer({ http, headers, url, auth }, lfsPointer) => Buffer`
 +
@@ -63,6 +63,12 @@ tells if file is an LFS pointer.
 where `http` is an `HttpClient` as supported by Isomorphic Git,
 URL is repository URL
 and `info` is an object returned by `buildPointerInfo()`.
+
+- `addLFS({ fs, dir, filepath })`
++
+where `fs` is an `FsClient` as supported by Isomorphic Git,
+`dir` is the working tree directory path
+and filepath is the path to the original file
 
 == Considered within scope
 
