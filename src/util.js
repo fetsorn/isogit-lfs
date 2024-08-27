@@ -1,6 +1,7 @@
 import path from "path";
-
 import { Buffer } from "buffer";
+import { buildPointerInfo, formatPointerInfo } from "./pointers.js";
+import { writeBlob, updateIndex } from "isomorphic-git";
 
 export const SPEC_URL = "https://git-lfs.github.com/spec/v1";
 
@@ -107,16 +108,10 @@ export function toHex(buffer) {
 export async function addLFS({ fs, dir, filepath }) {
   const fileBlob = await fs.promises.readFile(path.join(dir, filepath));
 
-  const { buildPointerInfo, formatPointerInfo } = await import(
-    "@fetsorn/isogit-lfs"
-  );
-
   const pointerInfo = await buildPointerInfo(fileBlob);
 
   // turn blob into pointer
   const pointerBlob = formatPointerInfo(pointerInfo);
-
-  const { writeBlob, updateIndex } = await import("isomorphic-git");
 
   const pointerOID = await writeBlob({
     fs,
