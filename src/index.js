@@ -1,5 +1,18 @@
-export { default as downloadBlobFromPointer, downloadUrlFromPointer } from "./download.js";
-export { default as populateCache } from "./populateCache.js";
-export { readPointer, readPointerInfo, buildPointerInfo, formatPointerInfo } from "./pointers.js";
-export { default as uploadBlobs } from "./upload.js";
-export { pointsToLFS, addLFS } from "./util.js";
+import { default as downloadBlobFromPointer, downloadUrlFromPointer } from "./download.js";
+import { default as populateCache } from "./populateCache.js";
+import { readPointer, readPointerInfo, buildPointerInfo, formatPointerInfo } from "./pointers.js";
+import { default as uploadBlobs } from "./upload.js";
+import { pointsToLFS, addLFS } from "./util.js";
+
+export default {
+  downloadBlobFromPointer,
+  downloadUrlFromPointer,
+  populateCache,
+  readPointer,
+  readPointerInfo,
+  buildPointerInfo,
+  formatPointerInfo,
+  uploadBlobs,
+  pointsToLFS,
+  addLFS
+}

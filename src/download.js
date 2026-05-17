@@ -103,9 +103,7 @@ export async function downloadUrlFromPointer(
 // { http: { request }, headers = {}, url, auth }: HTTPRequest,
 // { info, objectPath }: Pointer
 export default async function downloadBlobFromPointer(
-  { promises: fs },
-  { http: { request }, headers = {}, url, auth },
-  { info, objectPath }
+  { fs: { promises: fs }, http: { request }, headers = {}, url, auth, pointer: { info, objectPath } }
 ) {
   try {
     const cached = await fs.readFile(objectPath);

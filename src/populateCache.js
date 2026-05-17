@@ -76,9 +76,7 @@ export default async function populateCache(
             });
 
             await downloadBlobFromPointer(
-              fs,
-              { http, url: remoteURL },
-              pointer
+              { fs, http, url: remoteURL, pointer },
             );
           }
         }
